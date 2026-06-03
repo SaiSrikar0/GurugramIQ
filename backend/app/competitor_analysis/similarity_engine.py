@@ -238,15 +238,21 @@ class SimilarityEngine:
     @staticmethod
     def _row_to_dict(row: pd.Series, score: float) -> dict[str, Any]:
         """Serialize a DataFrame row + similarity score into a plain dict."""
+        def safe_str(val, default=""):
+            """Convert value to string, treating NaN as default."""
+            if pd.isna(val):
+                return default
+            return str(val).strip()
+        
         return {
-            "company": row.get("Company", ""),
-            "status": row.get("Satus", row.get("Status", "")),
-            "year_founded": row.get("Year Founded", None),
-            "categories": row.get("Categories", ""),
-            "headquarters_city": row.get("Headquarters (City)", ""),
-            "headquarters_country": row.get("Headquarters (Country)", ""),
-            "description": row.get("Description", ""),
-            "investors": row.get("Investors", ""),
-            "cluster": int(row["_cluster"]) if "_cluster" in row.index else -1,
+            "company": safe_str(row.get("Company", "")),
+            "status": safe_str(row.get("Satus", row.get("Status", ""))),
+            "year_founded": int(row.get("Year Founded", 0)) if pd.notna(row.get("Year Founded")) else None,
+            "categories": safe_str(row.get("Categories", "")),
+            "headquarters_city": safe_str(row.get("Headquarters (City)", "")),
+            "headquarters_country": safe_str(row.get("Headquarters (Country)", "")),
+            "description": safe_str(row.get("Description", "")),
+            "investors": safe_str(row.get("Investors", "")),
+            "cluster": int(row["_cluster"]) if "_cluster" in row.index and pd.notna(row["_cluster"]) else -1,
             "similarity_score": round(score, 4),
         }
