@@ -1,4 +1,4 @@
-# LaunchIQ — Startup Intelligence Platform
+# GuruGramIQ — Startup Intelligence Platform
 
 A full-stack web app that lets you analyze startups, predict success probability, and find competitors — powered by a dataset of 600+ real companies.
 
